@@ -10,25 +10,26 @@ ltc2185::ltc2185(rf_ps_damper_driver* pdrv){
   this->pdrv = pdrv;
   adc_sel    = 0;
   rst        = 0;
-  ltc2185::set_adc();
+  set_adc();
 }
 
 // ltc2185 user menu function
-void ltc2185::run(){
+void ltc2185::run() {
   std::cout << "what to do[d=set dealy value, r=reset dealy value, s=change adc, g=reset ADC's, e=exit]: ";
   std::cin >> to_do;
+
   switch(to_do) {
     case 's'  :
-      ltc2185::set_adc();
+      set_adc();
       break;
     case 'r'  :
-      ltc2185::rst_delay();
+      rst_delay();
       break;
     case 'd'  :
-      ltc2185::set_delay();
+      set_delay();
       break;
     case 'g'  :
-      ltc2185::rst_adc();
+      rst_adc();
       break;
     case 'e'  :
       std::cout << "You set: "                       << std::endl;
@@ -40,26 +41,28 @@ void ltc2185::run(){
       break;
     default :
       std::cout << "Error, you can olny choose [d, r, s, g, e]" << std::endl;
-      ltc2185::run();
+      run();
     }
 }
 
 // ltc2185 adc selector function
-void ltc2185::set_adc(){
+void ltc2185::set_adc() {
   std::cout << "select adc[0-3]: ";
   std::cin >> adc_sel;
+
   while(std::cin.fail() || (adc_sel < 0 || adc_sel > 3)) {
     std::cout << "Error, please put int value in range [0-3]" << std::endl;
     std::cin.clear();
     std::cin.ignore(256,'\n');
     std::cin >> adc_sel;
   }
+
   std::cout << "you selected: adc" << adc_sel << std::endl;
-  ltc2185::rst_delay();
+  rst_delay();
 }
 
 // ltc2185 delay setter function
-void ltc2185::set_delay(){
+void ltc2185::set_delay() {
   std::cout << "put delay value for adc" << adc_sel <<" [0-31]: ";
   std::cin >> delay_t[adc_sel];
 
@@ -92,19 +95,22 @@ void ltc2185::set_delay(){
     usleep(microsecond);
     std::cout << "now adc" << adc_sel << " delay is: " << (i+1) << std::endl;
   }
+
   run();
 }
 
 // ltc2185 adc reset function
-void ltc2185 :: rst_adc(){
+void ltc2185::rst_adc() {
   std::cout << "reset all adc's [1/0]?: ";
   std::cin >> rst;
+
   while(std::cin.fail() || (rst < 0 || rst > 1)) {
     std::cout << "Error, please put int value[0/1]" << std::endl;
     std::cin.clear();
     std::cin.ignore(256,'\n');
     std::cin >> rst;
   }
+
   if(rst){
     pdrv->eda_adc.adc_gcr.sw_reset.set(1);
     usleep(microsecond);
@@ -113,11 +119,12 @@ void ltc2185 :: rst_adc(){
   } else {
     std::cout << "nothing done" << std::endl;;
   }
-  ltc2185::run();
+
+  run();
 }
 
 // ltc2185 adc delay reset function
-void ltc2185 :: rst_delay(){
+void ltc2185::rst_delay() {
   std::cout << "reset dealy value for adc" << adc_sel << " [1/0]?: ";
   std::cin >> rst_d;
   while(std::cin.fail() || (rst_d < 0 || rst_d > 1)) {
@@ -150,5 +157,5 @@ void ltc2185 :: rst_delay(){
   } else {
     std::cout << "nothing done" << std::endl;;
   }
-  ltc2185::run();
+  run();
 }

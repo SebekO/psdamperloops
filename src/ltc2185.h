@@ -1,5 +1,5 @@
-#ifndef LTC2185_H
-#define LTC2185_H
+#ifndef LTC2185_H_
+#define LTC2185_H_
 #include <rf-ps_damper-lib/rf_ps_damper_driver.hpp>
 
 class ltc2185{
